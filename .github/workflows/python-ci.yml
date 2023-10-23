@@ -17,7 +17,7 @@ jobs:
         manylinux: auto
         command: build
         working-directory: mzcore-py
-        args: --debug -o dist --no-sdist --strip --find-interpreter
+        args: -o dist --no-sdist --strip --find-interpreter
     - name: Upload wheels to artifact
       uses: actions/upload-artifact@v3
       with:
@@ -32,7 +32,7 @@ jobs:
       with:
         command: build
         working-directory: mzcore-py
-        args: --debug -o dist --no-sdist --strip --find-interpreter
+        args: -o dist --no-sdist --strip --find-interpreter
     - name: Upload wheels
       uses: actions/upload-artifact@v3
       with:
@@ -47,7 +47,7 @@ jobs:
       with:
         command: build
         working-directory: mzcore-py
-        args: --debug -o dist --no-sdist --strip --find-interpreter
+        args: -o dist --no-sdist --strip --find-interpreter
     - name: Upload wheels
       uses: actions/upload-artifact@v3
       with:
