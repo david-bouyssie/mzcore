@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "mzcore-rs",
+    "mzcore-py"
+]

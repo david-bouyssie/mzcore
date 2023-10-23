@@ -3,12 +3,13 @@
 name = "mzcore-py"
 version = "0.1.0"
 publish = false
+edition = "2021"
 
 [lib]
 name = "mzcore_py"
 crate-type = ["cdylib"]
 
 [dependencies]
-anyhow = "1.0.68"
-pyo3 = { version = "0.17.3", features = ["extension-module", "anyhow"] }
+anyhow = "1.0.75"
+pyo3 = { version = "0.20.0", features = ["extension-module", "anyhow"] }
 mzcore = { path = "../mzcore-rs" }
