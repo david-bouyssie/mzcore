@@ -22,7 +22,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: wheels
-        path: dist
+        path: mzcore-py/dist
 
   windows:
     runs-on: windows-latest
@@ -37,7 +37,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: wheels
-        path: dist
+        path: mzcore-py/dist
 
   macos:
     runs-on: macos-latest
@@ -52,7 +52,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: wheels
-        path: dist
+        path: mzcore-py/dist
 
   # release:
   #   name: Release
