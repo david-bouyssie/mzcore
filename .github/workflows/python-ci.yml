@@ -16,6 +16,7 @@ jobs:
       with:
         manylinux: auto
         command: build
+        path: mzcore-py
         args: --release --sdist -o dist --find-interpreter
     - name: Upload wheels to artifact
       uses: actions/upload-artifact@v3
@@ -30,6 +31,7 @@ jobs:
     - uses: PyO3/maturin-action@v1
       with:
         command: build
+        path: mzcore-py
         args: --release -o dist --find-interpreter
     - name: Upload wheels
       uses: actions/upload-artifact@v3
@@ -44,6 +46,7 @@ jobs:
     - uses: PyO3/maturin-action@v1
       with:
         command: build
+        path: mzcore-py
         args: --release -o dist --universal2 --find-interpreter
     - name: Upload wheels
       uses: actions/upload-artifact@v3
