@@ -47,7 +47,7 @@ jobs:
       with:
         command: build
         working-directory: mzcore-py
-        args: -o dist --strip --find-interpreter
+        args: -o dist --strip --find-interpreter --target universal2-apple-darwin
     - name: Upload wheels
       uses: actions/upload-artifact@v3
       with:
