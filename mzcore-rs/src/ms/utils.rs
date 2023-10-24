@@ -118,41 +118,50 @@ pub fn mass_to_mz(mass: f64, charge: i32) -> f64 {
     }
 }
 
-pub trait SeqMassCalc {
-    fn calc_aa_seq_mass(&self, aa_table: &AminoAcidTable, mass_type: MassType) -> Result<f64>;
+pub trait SeqStrMassCalc {
+    fn calc_mass_from_aa_str(&self, aa_table: &AminoAcidTable, mass_type: MassType) -> Result<f64>;
 }
 
-impl SeqMassCalc for &str {
-    fn calc_aa_seq_mass(&self, aa_table: &AminoAcidTable, mass_type: MassType) -> Result<f64> {
-        self.chars().calc_aa_seq_mass(aa_table, mass_type)
+impl SeqStrMassCalc for &str {
+    fn calc_mass_from_aa_str(&self, aa_table: &AminoAcidTable, mass_type: MassType) -> Result<f64> {
+        self.chars().calc_mass_from_aa_chars(aa_table, mass_type)
     }
 }
 
-impl<I> SeqMassCalc for I
+pub trait SeqCharsMassCalc {
+    fn calc_mass_from_aa_chars(&self, aa_table: &AminoAcidTable, mass_type: MassType) -> Result<f64>;
+}
+
+// TODO: think about a solution that could avoid iterator cloning operation
+impl<I> SeqCharsMassCalc for I
 where
     I: Iterator<Item = char>,
+    I: Clone,
 {
-    fn calc_aa_seq_mass(&self, aa_table: &AminoAcidTable, mass_type: MassType) -> Result<f64> {
+    fn calc_mass_from_aa_chars(&self, aa_table: &AminoAcidTable, mass_type: MassType) -> Result<f64> {
+
         let aa_by_code1 = &aa_table.aa_by_code1;
 
-        let mut seq_mass = 0.0;
-
-        for aa_as_char in aa_as_chars {
-            //let aa_as_char = seq_as_bytes[char_idx] as char;
+        let seq_mass = self.clone().fold(0.0, |acc, aa_as_char| {
             let aa_opt = aa_by_code1.get(&aa_as_char);
             let aa = aa_opt.context(format!(
-                "can't find amino acid '{}' in the provided table",aa_as_char
-            ))?;
+                "can't find amino acid '{}' in the provided table",
+                aa_as_char
+            )).unwrap(); // You might want to handle this error better.
 
-            seq_mass += match mass_type {
+            let mass = match mass_type {
                 MassType::Monoisotopic => aa.mono_mass,
-                MassType::Average => aa.average_mass
-            }
-        }
+                MassType::Average => aa.average_mass,
+            };
+            acc + mass
+        });
 
-        seq_mass += if mono_mass {WATER_MONO_MASS} else {WATER_AVERAGE_MASS};
+        let water_mass = match mass_type {
+            MassType::Monoisotopic => WATER_MONO_MASS,
+            MassType::Average => WATER_AVERAGE_MASS,
+        };
 
-        Ok(seq_mass)
+        Ok(seq_mass + water_mass)
     }
 }
 
@@ -171,7 +180,7 @@ where
     F: Fn(&T, &S) -> Ordering,
 {
     let left_idx = match slice.binary_search_by(|a| key(a, &low)) {
-        Ok(idx) | Err(idx) => {
+        core::result::Result::Ok(idx) | core::result::Result::Err(idx) => {
             let mut idx = idx.saturating_sub(1);
             while idx > 0 && key(&slice[idx], &low) != Ordering::Less {
                 idx -= 1;
@@ -181,7 +190,7 @@ where
     };
 
     let right_idx = match slice[left_idx..].binary_search_by(|a| key(a, &high)) {
-        Ok(idx) | Err(idx) => {
+        core::result::Result::Ok(idx) | core::result::Result::Err(idx) => {
             let mut idx = idx + left_idx;
             while idx < slice.len() && key(&slice[idx], &high) != Ordering::Greater {
                 idx = idx.saturating_add(1);
