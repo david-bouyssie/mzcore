@@ -142,19 +142,20 @@ where
 
         let aa_by_code1 = &aa_table.aa_by_code1;
 
-        let seq_mass = self.clone().fold(0.0, |acc, aa_as_char| {
+        let seq_mass = self.clone().try_fold(0.0, |acc, aa_as_char| {
             let aa_opt = aa_by_code1.get(&aa_as_char);
-            let aa = aa_opt.context(format!(
+            let aa = aa_opt.ok_or(anyhow!(
                 "can't find amino acid '{}' in the provided table",
                 aa_as_char
-            )).unwrap(); // You might want to handle this error better.
+            ))?;
 
             let mass = match mass_type {
                 MassType::Monoisotopic => aa.mono_mass,
                 MassType::Average => aa.average_mass,
             };
-            acc + mass
-        });
+
+            Ok(acc + mass)
+        })?;
 
         let water_mass = match mass_type {
             MassType::Monoisotopic => WATER_MONO_MASS,
