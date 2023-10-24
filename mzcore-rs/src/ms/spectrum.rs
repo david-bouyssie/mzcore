@@ -43,7 +43,6 @@ impl SpectrumData {
 
 // --- Similar to sage definitions --- //
 
-/// A charge-less peak at monoisotopic mass
 #[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Peak {
     pub mz: f64,

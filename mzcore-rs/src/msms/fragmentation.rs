@@ -7,7 +7,6 @@ use std::collections::HashMap;
 
 use crate::chemistry::constants::WATER_MONO_MASS;
 use crate::chemistry::table::AminoAcidTable;
-//calc_aa_seq_mass_from_chars, mass_to_mz, mz_to_mass,
 use crate::ms::utils::*;
 use crate::msms::model::*;
 
@@ -185,7 +184,7 @@ pub fn change_frag_series_charge_state(frag_series: &TheoreticalFragmentIons, ne
 /*fn _calc_frag_ion_mz(pep_subset_seq: Iter<char>, aa_table: &AminoAcidTable, frag_mass_shift: f64, charge: i8) -> Result<f64> {
 
     // Calculate mass of peptide sequence subset
-    let pep_subset_mass = calc_aa_seq_mass_from_chars(pep_subset_seq, aa_table, true)?;
+    let pep_subset_mass = pep_subset_seq.calc_aa_seq_mass(pep_subset_seq, aa_table, true)?;
 
     // Calculate mass of fragment ion
     let ion_mass = pep_subset_mass + frag_mass_shift;

@@ -6,11 +6,15 @@
 /// SPDX-License-Identifier: MIT
 ///
 
-use serde::{Serialize, Deserialize};
 use std::cmp::Ordering;
 use std::ops::Mul;
 
-use crate::chemistry::constants::PROTON_MASS;
+use anyhow::*;
+use serde::{Serialize, Deserialize};
+
+use crate::chemistry::constants::{PROTON_MASS, WATER_MONO_MASS, WATER_AVERAGE_MASS};
+use crate::chemistry::table::AminoAcidTable;
+use crate::ms::MassType;
 
 #[allow(non_camel_case_types)]
 #[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
@@ -111,6 +115,44 @@ pub fn mass_to_mz(mass: f64, charge: i32) -> f64 {
     } else {
         let z = charge as f64;
         (mass + z * PROTON_MASS) / z.abs()
+    }
+}
+
+pub trait SeqMassCalc {
+    fn calc_aa_seq_mass(&self, aa_table: &AminoAcidTable, mass_type: MassType) -> Result<f64>;
+}
+
+impl SeqMassCalc for &str {
+    fn calc_aa_seq_mass(&self, aa_table: &AminoAcidTable, mass_type: MassType) -> Result<f64> {
+        self.chars().calc_aa_seq_mass(aa_table, mass_type)
+    }
+}
+
+impl<I> SeqMassCalc for I
+where
+    I: Iterator<Item = char>,
+{
+    fn calc_aa_seq_mass(&self, aa_table: &AminoAcidTable, mass_type: MassType) -> Result<f64> {
+        let aa_by_code1 = &aa_table.aa_by_code1;
+
+        let mut seq_mass = 0.0;
+
+        for aa_as_char in aa_as_chars {
+            //let aa_as_char = seq_as_bytes[char_idx] as char;
+            let aa_opt = aa_by_code1.get(&aa_as_char);
+            let aa = aa_opt.context(format!(
+                "can't find amino acid '{}' in the provided table",aa_as_char
+            ))?;
+
+            seq_mass += match mass_type {
+                MassType::Monoisotopic => aa.mono_mass,
+                MassType::Average => aa.average_mass
+            }
+        }
+
+        seq_mass += if mono_mass {WATER_MONO_MASS} else {WATER_AVERAGE_MASS};
+
+        Ok(seq_mass)
     }
 }
 

@@ -22,7 +22,7 @@ pub struct MatchedPeak {
     pub aa_position: u16, // AA position in amino acid sequence (starts at 1)
 }
 
-pub fn annotate_spectrum(spectrum_peaks: &Vec<[f64;2]>, frag_table: &FragmentationTable, mz_error_tol: f64) -> Vec<MatchedPeak> {
+pub fn annotate_spectrum(spectrum_peaks: &[[f64;2]], frag_table: &FragmentationTable, mz_error_tol: f64) -> Vec<MatchedPeak> {
 
     let frag_table_n_cols = frag_table.len();
     let frag_table_n_rows = frag_table.first().unwrap().mz_values.len();
@@ -144,7 +144,7 @@ pub fn annotate_spectrum(spectrum_peaks: &Vec<[f64;2]>, frag_table: &Fragmentati
     matched_peaks
 }
 
-// --- R*Tree based annotator by david-bouyssie (should be implemented in a different crate)
+// --- R*Tree based annotator by david-bouyssie (should be implemented in a dedicated feature)
 
 /*
 use rstar::RTree;
@@ -161,7 +161,7 @@ pub enum PeakSelectionStrategy {
     HIGHEST_PEAK,
 }
 
-fn index_peaks(spectrum_peaks: &Vec<[f64;2]>) -> RTree<CustomExpPeak> {
+fn index_peaks(spectrum_peaks: &[[f64;2]]) -> RTree<CustomExpPeak> {
     // --- Compute R*Tree indexing of experimental data --- //
     let all_custom_points: Vec<CustomExpPeak> = spectrum_peaks.iter().enumerate().map(|(peak_idx, peak)| {
         CustomExpPeak::new([peak[0], 0.0], (peak_idx,peak[1]))
