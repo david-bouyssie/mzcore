@@ -181,7 +181,7 @@ where
     F: Fn(&T, &S) -> Ordering,
 {
     let left_idx = match slice.binary_search_by(|a| key(a, &low)) {
-        core::result::Result::Ok(idx) | core::result::Result::Err(idx) => {
+        Result::Ok(idx) | Result::Err(idx) => {
             let mut idx = idx.saturating_sub(1);
             while idx > 0 && key(&slice[idx], &low) != Ordering::Less {
                 idx -= 1;
@@ -191,7 +191,7 @@ where
     };
 
     let right_idx = match slice[left_idx..].binary_search_by(|a| key(a, &high)) {
-        core::result::Result::Ok(idx) | core::result::Result::Err(idx) => {
+        Result::Ok(idx) | Err(idx) => {
             let mut idx = idx + left_idx;
             while idx < slice.len() && key(&slice[idx], &high) != Ordering::Greater {
                 idx = idx.saturating_add(1);
