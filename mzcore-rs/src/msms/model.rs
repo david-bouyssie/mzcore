@@ -168,60 +168,59 @@ pub fn is_ion_forward(ion_type: FragmentIonSeries) -> Option<bool> {
     use FragmentIonSeriesDirection::*;
 
     match get_ion_series_direction(ion_type) {
-        FORWARD => Some(true),
-        REVERSE => Some(false),
-        NONE => None
+        Forward => Some(true),
+        Reverse => Some(false),
+        Unspecified => None
     }
 }
 
-#[allow(non_camel_case_types)]
 #[derive(Clone, Copy, Eq, PartialEq, Debug)] //, strum_macros::Display
 // --- create enumeration to define ion_types direction --- //
 pub enum FragmentIonSeriesDirection {
-    FORWARD,
-    REVERSE,
-    NONE,
+    Forward,
+    Reverse,
+    Unspecified,
 }
 
 //adv using match: if there is a change in fragment ion series, it warns you about it.
 pub fn get_ion_series_direction(ion_type: FragmentIonSeries) -> FragmentIonSeriesDirection {
 
     use FragmentIonSeries::*;
-    use FragmentIonSeriesDirection::*;
+    use FragmentIonSeriesDirection as SeriesDir;
 
     let ion_series_direction = match ion_type {
-        a => FORWARD,
-        a_H2O => FORWARD,
-        a_NH3 => FORWARD,
-        b => FORWARD,
-        b_H2O => FORWARD,
-        b_NH3 => FORWARD,
-        c => FORWARD,
-        c_dot => FORWARD,
-        c_m1 => FORWARD,
-        c_p1 => FORWARD,
-        c_p2 => FORWARD,
-        c_H2O => FORWARD,
-        c_NH3 => FORWARD,
-        d => NONE, // FIXME
-        v => NONE, // FIXME
-        w => NONE, // FIXME
-        x => REVERSE,
-        x_H2O => REVERSE,
-        x_NH3 => REVERSE,
-        y => REVERSE,
-        y_H2O => REVERSE,
-        y_NH3 => REVERSE,
-        ya => REVERSE,
-        yb => REVERSE,
-        z => REVERSE,
-        z_H2O => REVERSE,
-        z_NH3 => REVERSE,
-        z_dot => REVERSE,
-        z_p1 => REVERSE,
-        z_p2 => REVERSE,
-        z_p3 => REVERSE,
-        immonium => NONE,
+        a => SeriesDir::Forward,
+        a_H2O => SeriesDir::Forward,
+        a_NH3 => SeriesDir::Forward,
+        b => SeriesDir::Forward,
+        b_H2O => SeriesDir::Forward,
+        b_NH3 => SeriesDir::Forward,
+        c => SeriesDir::Forward,
+        c_dot => SeriesDir::Forward,
+        c_m1 => SeriesDir::Forward,
+        c_p1 => SeriesDir::Forward,
+        c_p2 => SeriesDir::Forward,
+        c_H2O => SeriesDir::Forward,
+        c_NH3 => SeriesDir::Forward,
+        d => SeriesDir::Unspecified, // FIXME
+        v => SeriesDir::Unspecified, // FIXME
+        w => SeriesDir::Unspecified, // FIXME
+        x => SeriesDir::Reverse,
+        x_H2O => SeriesDir::Reverse,
+        x_NH3 => SeriesDir::Reverse,
+        y => SeriesDir::Reverse,
+        y_H2O => SeriesDir::Reverse,
+        y_NH3 => SeriesDir::Reverse,
+        ya => SeriesDir::Reverse,
+        yb => SeriesDir::Reverse,
+        z => SeriesDir::Reverse,
+        z_H2O => SeriesDir::Reverse,
+        z_NH3 => SeriesDir::Reverse,
+        z_dot => SeriesDir::Reverse,
+        z_p1 => SeriesDir::Reverse,
+        z_p2 => SeriesDir::Reverse,
+        z_p3 => SeriesDir::Reverse,
+        immonium => SeriesDir::Unspecified,
     };
 
     ion_series_direction

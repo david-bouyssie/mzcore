@@ -102,7 +102,7 @@ pub fn compute_frag_series_mz_values(pep_seq: &str, ion_type: FragmentIonSeries,
     // --- This function contains ion series directions itself --- //
     use FragmentIonSeriesDirection::*;
     match get_ion_series_direction(ion_type) {
-        FORWARD => {
+        Forward => {
 
             let mut seq_mass = frag_series_mass_shift;
 
@@ -130,8 +130,8 @@ pub fn compute_frag_series_mz_values(pep_seq: &str, ion_type: FragmentIonSeries,
             }*/
 
             Ok(frag_series_mz_values)
-        },
-        REVERSE => {
+        }
+        Reverse => {
             let mut seq_mass = frag_series_mass_shift;
 
             // Reverse ions loop
@@ -157,8 +157,8 @@ pub fn compute_frag_series_mz_values(pep_seq: &str, ion_type: FragmentIonSeries,
             }*/
 
             Ok(frag_series_mz_values)
-        },
-        NONE => {
+        }
+        Unspecified => {
             bail!("unsupported ion type")
         }
     }
