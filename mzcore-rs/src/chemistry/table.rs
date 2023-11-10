@@ -44,12 +44,12 @@ impl AtomTable {
     }
 
     pub fn elemental_to_atomic_composition(&self, el_comp: ElementalComposition) -> Result<AtomicComposition> {
-        let atoms_res: Result<Vec<AtomIsotopicVariant>> = el_comp.element_counts.iter().map(|&elc| {
+        let atoms_res: Result<Vec<(AtomIsotopicVariant, f32)>> = el_comp.element_counts.iter().map(|&elc| {
              match self.atom_by_element.get(&elc.element) {
                 Some(atom) => {
                     match atom.isotopes.get(elc.isotope_index as usize) {
                         Some(isotope) => {
-                            Ok(AtomIsotopicVariant::new(atom.to_owned(), isotope.to_owned()))
+                            Ok((AtomIsotopicVariant::new(atom.to_owned(), isotope.to_owned()), elc.count))
                         }
                         None => Err(anyhow!("wrong isotope index {}", elc.isotope_index)),
                     }
@@ -59,7 +59,7 @@ impl AtomTable {
         }).collect();
 
         Ok(AtomicComposition {
-            atoms:  atoms_res?,
+            atoms: atoms_res?,
             additional_mass:el_comp.additional_mass
         })
     }

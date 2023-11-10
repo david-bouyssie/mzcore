@@ -380,8 +380,7 @@ use crate::chemistry::atom::AtomIsotopicVariant;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct AtomicComposition {
-    /// Save all constituent parts as the element in question, the isotope (or 0 for natural distribution), and the number of this part
-    pub atoms: Vec<AtomIsotopicVariant>,
+    pub atoms: Vec<(AtomIsotopicVariant, f32)>,
     /// Any additional mass, defined to be monoisotopic
     pub additional_mass: f64,
 }
