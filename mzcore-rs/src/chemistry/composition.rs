@@ -387,8 +387,8 @@ pub struct AtomicComposition {
 
 impl AtomicComposition {
     fn calc_mass(&self) -> f64 {
-        self.atoms.iter().fold(0.0,|sum, atom| {
-            sum + atom.mass()
+        self.atoms.iter().fold(0.0,|sum, (atom, count)| {
+            sum + atom.mass() * (*count as f64)
         })
     }
 }
